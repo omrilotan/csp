@@ -12,24 +12,24 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
 	/* config options here */
 	reactStrictMode: true,
-	transpilePackages: ['content-security-policy-manager'],
-  webpack: (config) => {
-    // Handle importing TS files between workspaces
-    config.module.rules.push({
-      test: /\.ts$|\.tsx$/,
-      include: [/workspaces\/content-security-policy-manager/],
-      use: [
-        {
-          loader: 'ts-loader',
-          options: {
-            transpileOnly: true,
-          },
-        },
-      ],
-    });
+	transpilePackages: ["content-security-policy-manager"],
+	webpack: (config) => {
+		// Handle importing TS files between workspaces
+		config.module.rules.push({
+			test: /\.ts$|\.tsx$/,
+			include: [/workspaces\/content-security-policy-manager/],
+			use: [
+				{
+					loader: "ts-loader",
+					options: {
+						transpileOnly: true,
+					},
+				},
+			],
+		});
 
-    return config;
-  },
+		return config;
+	},
 };
 
 export default nextConfig;

@@ -73,12 +73,8 @@
 	resize: vertical;
 }
 
-.main button {
-	padding: 8px 16px;
-}
-
 .addButton {
-	margin-top: 16px;
+	padding: 8px 16px;
 }
 
 .valueBlocksContainer {
@@ -100,7 +96,7 @@
 	align-items: center;
 	background-color: #e9ecef;
 	border-radius: 16px;
-	padding: 4px 8px;
+	padding: 4px 0 4px 8px;
 	margin: 2px 0;
 	font-size: 14px;
 	height: 26px;
@@ -111,8 +107,8 @@
 	background: none;
 	border: none;
 	color: #666;
-	margin-left: 6px;
-	padding: 0 4px;
+	margin: 0px;
+	padding: 0.25em 0.5em;
 	font-size: 16px;
 	cursor: pointer;
 	border-radius: 50%;

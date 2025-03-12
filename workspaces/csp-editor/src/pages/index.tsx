@@ -33,14 +33,14 @@ export default function Home() {
 
 		// Add all valid directives
 		updatedRules.forEach(([directive, values]) => {
-			if (directive && values.length > 0) {
+			if (directive) {
 				csp.add(directive as any, ...values);
 			}
 		});
 
 		// Add all flags
 		updatedFlags.forEach(([name, values]) => {
-			if (name && values.length > 0) {
+			if (name) {
 				csp.set(name as any, ...values);
 			}
 		});
@@ -132,8 +132,17 @@ export default function Home() {
 		updateCSP(undefined, updatedFlags);
 	};
 
-	const handleFlagChange = (index: number, newFlag: string) =>
-		modifyFlag(index, newFlag);
+	const handleFlagChange = (index: number, newFlag: string) => {
+		if (newFlag === "") {
+			// Remove the row if flag name is empty
+			const updatedFlags = [...flagsTable];
+			updatedFlags.splice(index, 1);
+			return updateCSP(undefined, updatedFlags);
+		}
+
+		// Otherwise update with new flag name
+		return modifyFlag(index, newFlag);
+	};
 
 	const handleFlagValueDelete = (rowIndex: number, valueIndex: number) =>
 		modifyFlag(rowIndex, undefined, (values) => {
@@ -191,7 +200,7 @@ export default function Home() {
 						</thead>
 						<tbody>
 							{rulesTable.map(([source, directives], index) => (
-								<tr key={index}>
+								<tr key={source}>
 									<td>
 										<input
 											type="text"
@@ -233,7 +242,7 @@ export default function Home() {
 						</thead>
 						<tbody>
 							{flagsTable.map(([flag, values], index) => (
-								<tr key={index}>
+								<tr key={flag}>
 									<td>
 										<input
 											type="text"
