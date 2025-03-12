@@ -1,0 +1,422 @@
+exports[`adjust > adjust directives based on reports 1`] = `
+[
+  [
+    "rules",
+    [
+      [
+        "accounts.google.com",
+        [
+          "style-src-elem",
+          "script-src-elem"
+        ]
+      ],
+      [
+        "activity.website.com",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "api.userway.org",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "assets.mycdn.com",
+        [
+          "font-src",
+          "manifest-src",
+          "media-src"
+        ]
+      ],
+      [
+        "blob",
+        [
+          "worker-src"
+        ]
+      ],
+      [
+        "c3e59d4a8c81.cdn4.forter.com",
+        [
+          "script-src-elem"
+        ]
+      ],
+      [
+        "c8451e3ba7474e6d82bc5ed9055b8f15-c3e59d4a8c81.cdn.forter.com",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "cdn.cookielaw.org",
+        [
+          "connect-src",
+          "script-src-elem"
+        ]
+      ],
+      [
+        "cdn.userway.org",
+        [
+          "script-src-elem",
+          "style-src-elem"
+        ]
+      ],
+      [
+        "cdn0.forter.com",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "cdn3.forter.com",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "cdn9.forter.com",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "d3lqotgbn3npr.cloudfront.net",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "eval",
+        [
+          "script-src"
+        ]
+      ],
+      [
+        "geolocation.onetrust.com",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "inline",
+        [
+          "script-src-elem",
+          "style-src-elem",
+          "script-src-attr",
+          "style-src-attr"
+        ]
+      ],
+      [
+        "relay.website.com",
+        [
+          "connect-src"
+        ]
+      ],
+      [
+        "resources.cloudinary.com",
+        [
+          "media-src"
+        ]
+      ],
+      [
+        "www.googletagmanager.com",
+        [
+          "script-src-elem"
+        ]
+      ]
+    ]
+  ],
+  [
+    "flags",
+    []
+  ]
+]
+`;
+
+exports[`content-security-policy-manager > getter: flags 1`] = `
+[
+  [
+    "upgrade-insecure-requests",
+    []
+  ],
+  [
+    "require-trusted-types-for",
+    [
+      "'script'"
+    ]
+  ],
+  [
+    "trusted-types",
+    [
+      "'allow-duplicates'"
+    ]
+  ],
+  [
+    "plugin-types",
+    [
+      "application/pdf",
+      "application/x-shockwave-flash",
+      "application/x-java-applet"
+    ]
+  ],
+  [
+    "report-to",
+    [
+      "csp-endpoint"
+    ]
+  ]
+]
+`;
+
+exports[`content-security-policy-manager > getter: rules 1`] = `
+[
+  [
+    "self",
+    [
+      "script-src",
+      "style-src"
+    ]
+  ],
+  [
+    "unsafe-eval",
+    [
+      "script-src"
+    ]
+  ],
+  [
+    "unsafe-inline",
+    [
+      "script-src"
+    ]
+  ],
+  [
+    "*.example.com",
+    [
+      "script-src",
+      "style-src"
+    ]
+  ],
+  [
+    "https://example.com",
+    [
+      "script-src",
+      "style-src"
+    ]
+  ]
+]
+`;
+
+exports[`content-security-policy-manager > json snapshot 1`] = `
+{
+  "rules": {
+    "self": [
+      "script-src",
+      "style-src"
+    ],
+    "unsafe-inline": [
+      "script-src"
+    ],
+    "unsafe-eval": [
+      "script-src"
+    ],
+    "*.example.com": [
+      "script-src",
+      "style-src"
+    ],
+    "https://example.com": [
+      "script-src",
+      "style-src"
+    ]
+  },
+  "flags": {
+    "upgrade-insecure-requests": [],
+    "require-trusted-types-for": [
+      "'script'"
+    ],
+    "trusted-types": [
+      "'allow-duplicates'"
+    ],
+    "plugin-types": [
+      "application/pdf",
+      "application/x-shockwave-flash",
+      "application/x-java-applet"
+    ],
+    "report-to": [
+      "csp-endpoint"
+    ]
+  }
+}
+`;
+
+exports[`content-security-policy-manager > string snapshot 1`] = `
+"script-src 'self' 'unsafe-inline' 'unsafe-eval' *.example.com https://example.com; style-src 'self' *.example.com https://example.com; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types 'allow-duplicates'; plugin-types application/pdf application/x-shockwave-flash application/x-java-applet; report-to csp-endpoint"
+`;
+
+exports[`content-security-policy-manager > table snapshot 1`] = `
+[
+  [
+    "rules",
+    [
+      [
+        "self",
+        [
+          "script-src",
+          "style-src"
+        ]
+      ],
+      [
+        "unsafe-eval",
+        [
+          "script-src"
+        ]
+      ],
+      [
+        "unsafe-inline",
+        [
+          "script-src"
+        ]
+      ],
+      [
+        "*.example.com",
+        [
+          "script-src",
+          "style-src"
+        ]
+      ],
+      [
+        "https://example.com",
+        [
+          "script-src",
+          "style-src"
+        ]
+      ]
+    ]
+  ],
+  [
+    "flags",
+    [
+      [
+        "upgrade-insecure-requests",
+        []
+      ],
+      [
+        "require-trusted-types-for",
+        [
+          "'script'"
+        ]
+      ],
+      [
+        "trusted-types",
+        [
+          "'allow-duplicates'"
+        ]
+      ],
+      [
+        "plugin-types",
+        [
+          "application/pdf",
+          "application/x-shockwave-flash",
+          "application/x-java-applet"
+        ]
+      ],
+      [
+        "report-to",
+        [
+          "csp-endpoint"
+        ]
+      ]
+    ]
+  ]
+]
+`;
+
+exports[`load > load directives from a CSP header value 1`] = `
+[
+  [
+    "rules",
+    [
+      [
+        "*",
+        [
+          "img-src"
+        ]
+      ],
+      [
+        "data:",
+        [
+          "img-src"
+        ]
+      ],
+      [
+        "'self'",
+        [
+          "script-src",
+          "style-src"
+        ]
+      ],
+      [
+        "'unsafe-eval'",
+        [
+          "script-src"
+        ]
+      ],
+      [
+        "'unsafe-inline'",
+        [
+          "script-src"
+        ]
+      ],
+      [
+        "*.example.com",
+        [
+          "script-src",
+          "style-src"
+        ]
+      ],
+      [
+        "https://example.com",
+        [
+          "script-src",
+          "style-src"
+        ]
+      ]
+    ]
+  ],
+  [
+    "flags",
+    [
+      [
+        "upgrade-insecure-requests",
+        []
+      ],
+      [
+        "require-trusted-types-for",
+        [
+          "'script'"
+        ]
+      ],
+      [
+        "trusted-types",
+        [
+          "'allow-duplicates'"
+        ]
+      ],
+      [
+        "plugin-types",
+        [
+          "application/pdf",
+          "application/x-shockwave-flash",
+          "application/x-java-applet"
+        ]
+      ],
+      [
+        "report-to",
+        [
+          "csp-endpoint"
+        ]
+      ]
+    ]
+  ]
+]
+`;

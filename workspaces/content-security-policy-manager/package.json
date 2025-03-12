@@ -1,0 +1,50 @@
+{
+  "name": "content-security-policy-manager",
+  "version": "0.0.17",
+  "description": "🔒 Manage Content Security Policy by Vendor (Source) first",
+  "keywords": [
+    "content security policy",
+    "csp",
+    "csp manager",
+    "csp generator",
+    "csp builder",
+    "🔒"
+  ],
+  "author": "omrilotan",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omrilotan/csp.git"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    "./dist/index.d.ts": "./dist/index.d.ts",
+    "./dist/index.d.cts": "./dist/index.d.cts",
+    "./dist/index.js.map": "./dist/index.js.map",
+    "./dist/index.cjs.map": "./dist/index.cjs.map",
+    ".": {
+      "browser": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "node": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --config ../../tsup.config.ts",
+    "prepublishOnly": "npm run build"
+  }
+}

@@ -1,0 +1,207 @@
+.page {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	overflow: hidden; /* Prevent page-level scrolling */
+}
+
+.stickyHeader {
+	/* Remove sticky positioning */
+	position: static;
+	background-color: #ffffff;
+	padding: 1rem 2rem;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.main {
+	padding: 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	width: 100%;
+	overflow-y: auto; /* Enable vertical scrolling */
+	flex: 1; /* Take up remaining space */
+}
+
+.main ol {
+	padding-left: 0;
+	margin: 0;
+	font-size: 14px;
+	line-height: 24px;
+	letter-spacing: -0.01em;
+	list-style-position: inside;
+}
+
+.main table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.main th {
+	text-align: left;
+}
+
+.main th:nth-child(1) {
+	width: 25%;
+}
+
+.main th:nth-child(3) {
+	width: 100px;
+	text-align: center;
+}
+
+.main td {
+	padding: 8px;
+	vertical-align: top;
+}
+
+.main input {
+	width: 100%;
+	padding: 6px;
+}
+
+.main textarea {
+	width: 100%;
+	min-height: 100px;
+	padding: 10px;
+	margin-bottom: 10px;
+	resize: vertical;
+}
+
+.main button {
+	padding: 8px 16px;
+}
+
+.addButton {
+	margin-top: 16px;
+}
+
+.valueBlocksContainer {
+	display: flex;
+	flex-wrap: wrap; /* Changed from nowrap to wrap to allow line breaks */
+	gap: 8px;
+	width: 100%;
+	min-height: 36px;
+	padding: 4px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+	align-items: center;
+}
+
+.valueBlock {
+	display: inline-flex;
+	flex-shrink: 0; /* Prevent blocks from shrinking */
+	align-items: center;
+	background-color: #e9ecef;
+	border-radius: 16px;
+	padding: 4px 8px;
+	margin: 2px 0;
+	font-size: 14px;
+	height: 26px;
+	white-space: nowrap; /* Keep text in one line */
+}
+
+.deleteValueBtn {
+	background: none;
+	border: none;
+	color: #666;
+	margin-left: 6px;
+	padding: 0 4px;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 50%;
+	line-height: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.deleteValueBtn:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.valueInput {
+	width: 100%;
+	min-width: 100px;
+	border: none;
+	outline: none;
+	padding: 4px;
+	font-size: 14px;
+	height: 26px;
+	background: transparent;
+}
+
+.inputContainer {
+	position: relative;
+	display: inline-flex;
+	flex: 0 0 auto; /* Don't grow or shrink */
+	width: 200px;
+}
+
+.suggestions {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 10;
+	background-color: white;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	width: max-content;
+	min-width: 100%;
+	max-height: 200px;
+	overflow-y: auto;
+}
+
+.suggestionItem {
+	padding: 8px 12px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.suggestionItem:hover,
+.highlighted {
+	background-color: #f0f0f0;
+}
+
+.cspTextarea {
+	width: 100%;
+	min-height: 100px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-family: monospace;
+	resize: vertical;
+}
+
+.headerTitleRow {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.infoIconContainer {
+	position: relative;
+	display: inline-block;
+}
+
+.infoIcon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background-color: #e3e3e3;
+	color: #505050;
+	font-size: 14px;
+	font-style: italic;
+	cursor: help;
+	transition: background-color 0.3s;
+}
