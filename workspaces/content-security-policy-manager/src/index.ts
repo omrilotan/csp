@@ -14,7 +14,7 @@ import {
 	RequiredTrustedTypesForFlag,
 	RequiredTrustedTypesForElements,
 } from "./constants/index.ts";
-import { quote, unquote } from "./quotes/index.ts";
+import { quote, quoteSource, unquote } from "./quotes/index.ts";
 import { validateTrustedTypes } from "./validateTrustedTypes/index.ts";
 import { sortSources } from "./sortSources/index.ts";
 
@@ -240,11 +240,7 @@ export class ContentSecurityPolicyManager {
 						if (!Object.hasOwn(accumulator, directive))
 							accumulator[directive] = [];
 						accumulator[directive].push(
-							CSPSourceExpressions.includes(
-								source as ArrayElement<typeof CSPSourceExpressions>,
-							) || source.startsWith("nonce-")
-								? quote(source)
-								: source,
+							quoteSource(source as ArrayElement<typeof CSPSourceExpressions>),
 						);
 					});
 					return accumulator;
