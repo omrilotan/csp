@@ -201,3 +201,33 @@
 	cursor: help;
 	transition: background-color 0.3s;
 }
+
+.textareaContainer {
+	position: relative;
+	width: 100%;
+}
+
+.unlockButton {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	padding: 4px 8px;
+	background-color: #f0f0f0;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+	opacity: 0.7;
+}
+
+.unlockButton:hover {
+	opacity: 1;
+	background-color: #e0e0e0;
+}
+
+/* Add styling for readonly textarea */
+.cspTextarea[readonly] {
+	background-color: #f9f9f9;
+	border-color: #ddd;
+	cursor: default;
+}

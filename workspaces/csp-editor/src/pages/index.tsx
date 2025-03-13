@@ -11,6 +11,9 @@ import {
 import { CSPFlag } from "../../../content-security-policy-manager/src/types";
 
 export default function Home() {
+	// Add this state to track if textarea has been populated
+	const [textareaLocked, setTextareaLocked] = React.useState(false);
+
 	const cspRef = React.useRef(new ContentSecurityPolicyManager());
 	const csp = cspRef.current;
 	const [cspValue, setCSPValue] = React.useState("");
@@ -20,6 +23,16 @@ export default function Home() {
 	const [flagsTable, setFlagsTable] = React.useState<
 		ContentSecurityPolicyManager["flags"]
 	>([]);
+
+	// Add this state to track temporary edits
+	const [editingDirective, setEditingDirective] = React.useState<{
+		index: number;
+		value: string;
+	} | null>(null);
+	const [editingFlag, setEditingFlag] = React.useState<{
+		index: number;
+		value: string;
+	} | null>(null);
 
 	// Core update function that handles all CSP modifications
 	const updateCSP = (
@@ -59,6 +72,16 @@ export default function Home() {
 		csp.load(value);
 		setRulesTable(csp.rules);
 		setFlagsTable(csp.flags);
+
+		// Lock the textarea if it has content and isn't already locked
+		if (value.trim() && !textareaLocked) {
+			setTextareaLocked(true);
+		}
+	};
+
+	// Add a function to unlock textarea if needed
+	const unlockTextarea = () => {
+		setTextareaLocked(false);
 	};
 
 	// Rules table handlers
@@ -182,12 +205,24 @@ export default function Home() {
 							</span>
 						</div>
 					</div>
-					<textarea
-						value={cspValue}
-						onChange={handleCSPStringChange}
-						placeholder="Enter CSP here"
-						className={styles.cspTextarea}
-					/>
+					<div className={styles.textareaContainer}>
+						<textarea
+							value={cspValue}
+							onChange={handleCSPStringChange}
+							placeholder="Enter CSP here"
+							className={styles.cspTextarea}
+							readOnly={textareaLocked} // Add readonly attribute when locked
+						/>
+						{textareaLocked && (
+							<button
+								onClick={unlockTextarea}
+								className={styles.unlockButton}
+								title="Edit CSP string directly"
+							>
+								Edit
+							</button>
+						)}
+					</div>
 				</header>
 				<main className={styles.main}>
 					<h2>Directives</h2>
@@ -204,10 +239,25 @@ export default function Home() {
 									<td>
 										<input
 											type="text"
-											value={source}
-											onChange={(e) =>
-												handleDirectiveChange(index, e.target.value)
+											value={
+												editingDirective && editingDirective.index === index
+													? editingDirective.value
+													: source
 											}
+											onChange={(e) => {
+												// Just update the temporary state, not the CSP yet
+												setEditingDirective({ index, value: e.target.value });
+											}}
+											onBlur={() => {
+												// Only now update the CSP
+												if (
+													editingDirective &&
+													editingDirective.index === index
+												) {
+													handleDirectiveChange(index, editingDirective.value);
+													setEditingDirective(null);
+												}
+											}}
 											placeholder="Source"
 										/>
 									</td>
@@ -246,8 +296,22 @@ export default function Home() {
 									<td>
 										<input
 											type="text"
-											value={flag}
-											onChange={(e) => handleFlagChange(index, e.target.value)}
+											value={
+												editingFlag && editingFlag.index === index
+													? editingFlag.value
+													: flag
+											}
+											onChange={(e) => {
+												// Just update the temporary state, not the CSP yet
+												setEditingFlag({ index, value: e.target.value });
+											}}
+											onBlur={() => {
+												// Only now update the CSP
+												if (editingFlag && editingFlag.index === index) {
+													handleFlagChange(index, editingFlag.value);
+													setEditingFlag(null);
+												}
+											}}
 											placeholder="Flag name"
 										/>
 									</td>
