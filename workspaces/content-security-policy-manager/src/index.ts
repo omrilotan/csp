@@ -1,4 +1,4 @@
-import {
+import type {
 	CSPPluginType,
 	CSPSource,
 	CSPTrustedType,
@@ -234,7 +234,7 @@ export class ContentSecurityPolicyManager {
 	 */
 	toString(): string {
 		const rules = Object.entries(
-			Array.from(this.#rules).reduce(
+			this.rules.reduce(
 				(accumulator, [source, directives]) => {
 					directives.forEach((directive) => {
 						if (!Object.hasOwn(accumulator, directive))
@@ -252,9 +252,11 @@ export class ContentSecurityPolicyManager {
 				{} as Record<ArrayElement<typeof CSPDirectives>, CSPSource[]>,
 			),
 		).map(([directive, sources]) => [directive, sources.join(" ")].join(" "));
-		const generalRules = Array.from(this.#flags).map(([directive, values]) =>
-			[directive, ...Array.from(values)].join(" "),
+
+		const flags = this.flags.map(([directive, values]) =>
+			[directive, ...values].join(" "),
 		);
-		return rules.concat(generalRules).join("; ");
+
+		return rules.concat(flags).join("; ");
 	}
 }

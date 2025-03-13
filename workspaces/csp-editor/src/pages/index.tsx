@@ -34,6 +34,14 @@ export default function Home() {
 		value: string;
 	} | null>(null);
 
+	// Add state to track current edited value in textarea
+	const [editingCspValue, setEditingCspValue] = React.useState("");
+
+	// Initialize editing value when cspValue changes
+	React.useEffect(() => {
+		setEditingCspValue(cspValue);
+	}, [cspValue]);
+
 	// Core update function that handles all CSP modifications
 	const updateCSP = (
 		newRulesTable?: ContentSecurityPolicyManager["rules"],
@@ -68,10 +76,10 @@ export default function Home() {
 	const handleCSPStringChange = ({
 		target: { value },
 	}: React.ChangeEvent<HTMLTextAreaElement>) => {
-		setCSPValue(value);
-		csp.load(value);
+		csp.clear().load(value);
 		setRulesTable(csp.rules);
 		setFlagsTable(csp.flags);
+		setCSPValue(csp.toString());
 
 		// Lock the textarea if it has content and isn't already locked
 		if (value.trim() && !textareaLocked) {
@@ -82,6 +90,36 @@ export default function Home() {
 	// Add a function to unlock textarea if needed
 	const unlockTextarea = () => {
 		setTextareaLocked(false);
+	};
+
+	// Update textarea handlers
+	const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		// Only update local state, not the CSP yet
+		setEditingCspValue(e.target.value);
+	};
+
+	const handleTextareaBlur = () => {
+		// Now update the CSP
+		if (editingCspValue !== cspValue) {
+			setCSPValue(editingCspValue);
+			csp.clear().load(editingCspValue);
+			setRulesTable(csp.rules);
+			setFlagsTable(csp.flags);
+
+			// Lock the textarea if it has content and isn't already locked
+			if (editingCspValue.trim() && !textareaLocked) {
+				setTextareaLocked(true);
+			}
+		}
+	};
+
+	const handleTextareaKeyDown = (
+		e: React.KeyboardEvent<HTMLTextAreaElement>,
+	) => {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault(); // Prevent default newline
+			e.currentTarget.blur(); // Trigger blur to update
+		}
 	};
 
 	// Rules table handlers
@@ -207,8 +245,10 @@ export default function Home() {
 					</div>
 					<div className={styles.textareaContainer}>
 						<textarea
-							value={cspValue}
-							onChange={handleCSPStringChange}
+							value={editingCspValue}
+							onChange={handleTextareaChange}
+							onBlur={handleTextareaBlur}
+							onKeyDown={handleTextareaKeyDown}
 							placeholder="Enter CSP here"
 							className={styles.cspTextarea}
 							readOnly={textareaLocked} // Add readonly attribute when locked
@@ -256,6 +296,12 @@ export default function Home() {
 												) {
 													handleDirectiveChange(index, editingDirective.value);
 													setEditingDirective(null);
+												}
+											}}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+													e.currentTarget.blur();
 												}
 											}}
 											placeholder="Source"
@@ -310,6 +356,12 @@ export default function Home() {
 												if (editingFlag && editingFlag.index === index) {
 													handleFlagChange(index, editingFlag.value);
 													setEditingFlag(null);
+												}
+											}}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+													e.currentTarget.blur();
 												}
 											}}
 											placeholder="Flag name"

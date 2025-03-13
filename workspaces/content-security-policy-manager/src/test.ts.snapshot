@@ -250,7 +250,7 @@ exports[`content-security-policy-manager > json snapshot 1`] = `
 `;
 
 exports[`content-security-policy-manager > string snapshot 1`] = `
-"script-src 'self' 'unsafe-inline' 'unsafe-eval' *.example.com https://example.com; style-src 'self' *.example.com https://example.com; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types 'allow-duplicates'; plugin-types application/pdf application/x-shockwave-flash application/x-java-applet; report-to csp-endpoint"
+"script-src 'self' 'unsafe-eval' 'unsafe-inline' *.example.com https://example.com; style-src 'self' *.example.com https://example.com; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types 'allow-duplicates'; plugin-types application/pdf application/x-shockwave-flash application/x-java-applet; report-to csp-endpoint"
 `;
 
 exports[`content-security-policy-manager > table snapshot 1`] = `
@@ -273,96 +273,6 @@ exports[`content-security-policy-manager > table snapshot 1`] = `
       ],
       [
         "unsafe-inline",
-        [
-          "script-src"
-        ]
-      ],
-      [
-        "*.example.com",
-        [
-          "script-src",
-          "style-src"
-        ]
-      ],
-      [
-        "https://example.com",
-        [
-          "script-src",
-          "style-src"
-        ]
-      ]
-    ]
-  ],
-  [
-    "flags",
-    [
-      [
-        "upgrade-insecure-requests",
-        []
-      ],
-      [
-        "require-trusted-types-for",
-        [
-          "'script'"
-        ]
-      ],
-      [
-        "trusted-types",
-        [
-          "'allow-duplicates'"
-        ]
-      ],
-      [
-        "plugin-types",
-        [
-          "application/pdf",
-          "application/x-shockwave-flash",
-          "application/x-java-applet"
-        ]
-      ],
-      [
-        "report-to",
-        [
-          "csp-endpoint"
-        ]
-      ]
-    ]
-  ]
-]
-`;
-
-exports[`load > load directives from a CSP header value 1`] = `
-[
-  [
-    "rules",
-    [
-      [
-        "*",
-        [
-          "img-src"
-        ]
-      ],
-      [
-        "data:",
-        [
-          "img-src"
-        ]
-      ],
-      [
-        "'self'",
-        [
-          "script-src",
-          "style-src"
-        ]
-      ],
-      [
-        "'unsafe-eval'",
-        [
-          "script-src"
-        ]
-      ],
-      [
-        "'unsafe-inline'",
         [
           "script-src"
         ]

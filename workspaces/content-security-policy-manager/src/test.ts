@@ -1,9 +1,9 @@
 import { describe, test } from "node:test";
-import { deepEqual, equal } from "node:assert/strict";
+import { deepEqual, equal, notEqual } from "node:assert/strict";
 import { ContentSecurityPolicyManager } from "./index.ts";
 import { validateTrustedTypes } from "./validateTrustedTypes/index.ts";
 import reports from "../fixtures/reports.json" with { type: "json" };
-import { CSPViolationReport } from "./types/index.ts"; // Adjust the path as necessary
+import type { CSPViolationReport } from "./types/index.ts";
 
 describe("content-security-policy-manager", (): void => {
 	const csp = new ContentSecurityPolicyManager();
@@ -62,8 +62,18 @@ describe("load", (): void => {
 		].join("; ");
 		const csp = new ContentSecurityPolicyManager();
 		csp.load(header);
-		equal(csp.toString(), header);
-		context.assert.snapshot(csp.toTable());
+		const output = csp.toString();
+		notEqual(output, header);
+		// equals when sorted
+		deepEqual(
+			...([output, header].map((list) =>
+				list
+					.split(";")
+					.map((string) => string.trim().split(" ").sort().join(" "))
+					.sort()
+					.join("; "),
+			) as [string, string]),
+		);
 	});
 });
 

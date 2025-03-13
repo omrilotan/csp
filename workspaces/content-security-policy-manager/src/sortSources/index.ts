@@ -1,5 +1,5 @@
 import { CSPSourceKeywords } from "../constants/index.ts";
-import { CSPSource } from "../types/index.ts";
+import type { CSPSource } from "../types/index.ts";
 
 export function sortSources(
 	[a]: [CSPSource, any[]],
