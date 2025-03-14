@@ -37,6 +37,12 @@ export default function Home() {
 	// Add state to track current edited value in textarea
 	const [editingCspValue, setEditingCspValue] = React.useState("");
 
+	// Add this state for notifications
+	const [notification, setNotification] = React.useState<{
+		message: string;
+		type: "success" | "error";
+	} | null>(null);
+
 	// Initialize editing value when cspValue changes
 	React.useEffect(() => {
 		setEditingCspValue(cspValue);
@@ -72,24 +78,25 @@ export default function Home() {
 		setFlagsTable(csp.flags);
 	};
 
-	// Event handlers
-	const handleCSPStringChange = ({
-		target: { value },
-	}: React.ChangeEvent<HTMLTextAreaElement>) => {
-		csp.clear().load(value);
-		setRulesTable(csp.rules);
-		setFlagsTable(csp.flags);
-		setCSPValue(csp.toString());
-
-		// Lock the textarea if it has content and isn't already locked
-		if (value.trim() && !textareaLocked) {
-			setTextareaLocked(true);
-		}
-	};
-
 	// Add a function to unlock textarea if needed
 	const unlockTextarea = () => {
 		setTextareaLocked(false);
+	};
+
+	// Enhanced clipboard function with visual feedback
+	const copyToClipboard = () => {
+		navigator.clipboard
+			.writeText(cspValue)
+			.then(() => {
+				setNotification({ message: "Copied to clipboard!", type: "success" });
+				// Auto-dismiss after 2 seconds
+				setTimeout(() => setNotification(null), 2000);
+			})
+			.catch((err) => {
+				console.error("Failed to copy:", err);
+				setNotification({ message: "Failed to copy", type: "error" });
+				setTimeout(() => setNotification(null), 2000);
+			});
 	};
 
 	// Update textarea handlers
@@ -254,13 +261,29 @@ export default function Home() {
 							readOnly={textareaLocked} // Add readonly attribute when locked
 						/>
 						{textareaLocked && (
-							<button
-								onClick={unlockTextarea}
-								className={styles.unlockButton}
-								title="Edit CSP string directly"
+							<div className={styles.textareaButtons}>
+								<button
+									onClick={copyToClipboard}
+									className={styles.actionButton}
+									title="Copy CSP to clipboard"
+								>
+									Copy
+								</button>
+								<button
+									onClick={unlockTextarea}
+									className={styles.actionButton}
+									title="Edit CSP string directly"
+								>
+									Edit
+								</button>
+							</div>
+						)}
+						{notification && (
+							<div
+								className={`${styles.notification} ${styles[notification.type]}`}
 							>
-								Edit
-							</button>
+								{notification.message}
+							</div>
 						)}
 					</div>
 				</header>

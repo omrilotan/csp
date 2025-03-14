@@ -169,7 +169,9 @@
 .cspTextarea {
 	width: 100%;
 	min-height: 100px;
-	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	font-family: monospace;
@@ -207,6 +209,31 @@
 	width: 100%;
 }
 
+.textareaButtons {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	display: flex;
+	gap: 8px;
+	z-index: 10; /* Ensure buttons are above textarea */
+}
+
+.actionButton {
+	padding: 4px 12px;
+	background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+	background-color: white;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .unlockButton {
 	position: absolute;
 	top: 8px;
@@ -230,4 +257,52 @@
 	background-color: #f9f9f9;
 	border-color: #ddd;
 	cursor: default;
+}
+
+.notification {
+	position: absolute;
+	top: -40px;
+	right: 10px;
+	padding: 8px 12px;
+	border-radius: 4px;
+	font-size: 14px;
+	animation:
+		fadeIn 0.3s,
+		fadeOut 0.3s 1.7s;
+	opacity: 0.9;
+	transition: opacity 0.2s;
+	color: white;
+	z-index: 20;
+}
+
+.success {
+	background-color: #4caf50;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.error {
+	background-color: #f44336;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 0.9;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 0.9;
+		transform: translateY(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
 }
