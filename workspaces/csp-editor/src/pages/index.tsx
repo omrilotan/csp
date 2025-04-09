@@ -43,6 +43,9 @@ export default function Home() {
 		type: "success" | "error";
 	} | null>(null);
 
+	const [isModalOpen, setIsModalOpen] = React.useState(false);
+	const [exportedJson, setExportedJson] = React.useState<string>("");
+
 	// Initialize editing value when cspValue changes
 	React.useEffect(() => {
 		setEditingCspValue(cspValue);
@@ -224,6 +227,29 @@ export default function Home() {
 		modifyFlag(rowIndex, undefined, (values) => [...values, newValue.trim()]);
 	};
 
+	const exportCSP = () => {
+		const cspJson = csp.toTable(); // Use the toTable method
+		setExportedJson(JSON.stringify(cspJson, null, 2)); // Format JSON with indentation
+		setIsModalOpen(true); // Open the modal
+	};
+
+	const copyExportedJsonToClipboard = () => {
+		navigator.clipboard
+			.writeText(exportedJson)
+			.then(() => {
+				setNotification({
+					message: "Exported JSON copied to clipboard!",
+					type: "success",
+				});
+				setTimeout(() => setNotification(null), 2000); // Auto-dismiss after 2 seconds
+			})
+			.catch((err) => {
+				console.error("Failed to copy:", err);
+				setNotification({ message: "Failed to copy JSON", type: "error" });
+				setTimeout(() => setNotification(null), 2000);
+			});
+	};
+
 	return (
 		<>
 			<Head>
@@ -276,6 +302,13 @@ export default function Home() {
 								>
 									Edit
 								</button>
+								<button
+									onClick={exportCSP}
+									className={styles.actionButton}
+									title="Export CSP JSON structure"
+								>
+									Export
+								</button>
 							</div>
 						)}
 						{notification && (
@@ -292,8 +325,8 @@ export default function Home() {
 					<table>
 						<thead>
 							<tr>
-								<th>Directive</th>
-								<th>Sources</th>
+								<th>Source</th>
+								<th>Directives</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -355,7 +388,7 @@ export default function Home() {
 					<table>
 						<thead>
 							<tr>
-								<th>Flag</th>
+								<th>Directive</th>
 								<th>Values</th>
 							</tr>
 						</thead>
@@ -411,6 +444,32 @@ export default function Home() {
 						Add Flag
 					</button>
 				</main>
+				{isModalOpen && (
+					<div className={styles.modalOverlay}>
+						<div className={styles.modal}>
+							<h2>Exported CSP JSON</h2>
+							<textarea
+								value={exportedJson}
+								readOnly
+								className={styles.jsonTextarea}
+							/>
+							<div className={styles.modalButtons}>
+								<button
+									onClick={copyExportedJsonToClipboard}
+									className={styles.actionButton}
+								>
+									Copy to Clipboard
+								</button>
+								<button
+									onClick={() => setIsModalOpen(false)}
+									className={styles.closeButton}
+								>
+									Close
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</>
 	);
