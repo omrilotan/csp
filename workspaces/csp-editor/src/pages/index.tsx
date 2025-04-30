@@ -75,9 +75,15 @@ export default function Home() {
 			}
 		});
 
+		 // Merge the current rulesTable with csp.rules to preserve empty rows
+		const mergedRules = updatedRules.map(([directive, values]) => {
+			const existingRule = csp.rules.find(([d]) => d === directive);
+			return existingRule || [directive, values];
+		});
+
 		// Update state
 		setCSPValue(csp.toString());
-		setRulesTable(csp.rules);
+		setRulesTable(mergedRules as ContentSecurityPolicyManager["rules"]);
 		setFlagsTable(csp.flags);
 	};
 
@@ -141,22 +147,13 @@ export default function Home() {
 		const updatedTable = [...rulesTable];
 		const [directive, values] = updatedTable[index] || ["", []];
 
-		// If we're only removing values and it results in an empty array, remove the row
-		if (modifyValues && !newDirective) {
-			const newValues = modifyValues(values);
-			if (newValues.length === 0) {
-				updatedTable.splice(index, 1);
-				return updateCSP(updatedTable);
-			}
-			updatedTable[index] = [directive, newValues as typeof CSPDirectives];
-		} else {
-			// Otherwise update with new directive or values
-			updatedTable[index] = [
-				newDirective || directive,
-				modifyValues ? (modifyValues as any)(values) : values,
-			];
-		}
+		// Update with new directive or values
+		updatedTable[index] = [
+			newDirective !== undefined ? newDirective : directive,
+			modifyValues ? (modifyValues as any)(values) : values,
+		];
 
+		// Do not remove rows with empty directives or values
 		updateCSP(updatedTable);
 	};
 
@@ -372,6 +369,18 @@ export default function Home() {
 												handleValueDelete(index, valIndex)
 											}
 										/>
+									</td>
+									<td>
+										<button
+											onClick={() => {
+												const updatedTable = [...rulesTable];
+												updatedTable.splice(index, 1); // Remove the row
+												updateCSP(updatedTable);
+											}}
+											className={styles.deleteRowButton}
+										>
+											Delete
+										</button>
 									</td>
 								</tr>
 							))}
