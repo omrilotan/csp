@@ -1,4 +1,5 @@
 import { CSPDirectives, CSPSourceKeywords, flags } from "../constants/index.ts";
+export type { CSPFlag } from "../constants/index.ts";
 
 /**
  * Trusted Types restrict usage of known DOM XSS sink
@@ -14,11 +15,6 @@ export type CSPPluginType = string;
  * Source
  */
 export type CSPSource = ArrayElement<typeof CSPSourceKeywords> | string;
-
-/**
- * CSP flags affect the entire policy
- */
-export type CSPFlag = ArrayElement<typeof flags>;
 
 /**
  * Generic Reporting Framework

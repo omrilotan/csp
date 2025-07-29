@@ -67,7 +67,7 @@ export const CSPSourceKeywords: (
 /**
  * CSP flags affect the entire policy
  */
-type CSPFlag =
+export type CSPFlag =
 	/**
 	 * File types via <object> and <embed>. To load an <applet> (e.g. application/pdf)
 	 * @warning Experimental

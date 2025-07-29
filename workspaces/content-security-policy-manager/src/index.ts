@@ -19,6 +19,7 @@ import { validateTrustedTypes } from "./validateTrustedTypes/index.ts";
 import { sortSources } from "./sortSources/index.ts";
 
 export { CSPDirectives, CSPSourceKeywords };
+export type { CSPFlag };
 
 /**
  * A Content Security Policy (CSP) structure
@@ -100,51 +101,65 @@ export class ContentSecurityPolicyManager {
 	/*
 	 * Set a flag
 	 */
-	set(name: "upgrade-insecure-requests"): this;
-	set(name: "report-to", ...values: string[]): this;
-	set(
-		name: "plugin-types",
-		...values: [CSPPluginType, ...CSPPluginType[]]
-	): this;
+	set(name: "upgrade-insecure-requests", ...values: unknown[]): this;
+	set(name: "report-to", ...values: NonEmptyArray<string>): this;
+	set(name: "plugin-types", ...values: NonEmptyArray<CSPPluginType>): this;
 	set(
 		name: typeof TrustedTypesFlag,
-		...values: [CSPTrustedType, ...CSPTrustedType[]]
+		...values: NonEmptyArray<CSPTrustedType>
 	): this;
 	set(
 		name: typeof RequiredTrustedTypesForFlag,
-		...values: [
-			ArrayElement<typeof RequiredTrustedTypesForElements>,
-			...ArrayElement<typeof RequiredTrustedTypesForElements>[],
-		]
+		...values: NonEmptyArray<
+			ArrayElement<typeof RequiredTrustedTypesForElements>
+		>
 	): this;
 	set(name: ArrayElement<typeof flags>, ...values: string[]): this {
 		if (!this.#flags.has(name)) this.#flags.set(name, new Set());
 		values = values.map(unquote);
-		if (name === "report-to") {
-			values.forEach((value) => {
-				if (!/^[\w-_]+$/.test(unquote(value)))
-					throw new Error(`Invalid value for report-to: ${value}`);
-			});
-		}
-		if (name === TrustedTypesFlag) {
-			values.forEach((value) => {
-				if (!validateTrustedTypes(value))
-					throw new Error(`Invalid value for trusted-types: ${value}`);
-			});
-		}
-		if (name === RequiredTrustedTypesForFlag) {
-			(values as typeof RequiredTrustedTypesForElements).forEach((value) => {
-				if (!RequiredTrustedTypesForElements.includes(value))
+
+		// Validations
+		switch (name) {
+			case "plugin-types":
+				// TODO: Validate plugin types
+				break;
+			case "upgrade-insecure-requests":
+				if (values.length > 0)
 					throw new Error(
-						`Invalid value for require-trusted-types-for: ${value}`,
+						`upgrade-insecure-requests does not accept any values, got: ${values.join(", ")}`,
 					);
-			});
+				break;
+			case "report-to":
+				if (values.length === 0)
+					throw new Error("report-to requires at least one value");
+				values.forEach((value) => {
+					if (!/^[\w-_]+$/.test(unquote(value)))
+						throw new Error(`Invalid value for report-to: ${value}`);
+				});
+				break;
+			case TrustedTypesFlag:
+				if (values.length === 0)
+					throw new Error("trusted-types requires at least one value");
+				values.forEach((value) => {
+					if (!validateTrustedTypes(value))
+						throw new Error(`Invalid value for trusted-types: ${value}`);
+				});
+				values = values.map((value) => quote(value));
+				break;
+			case RequiredTrustedTypesForFlag:
+				if (values.length === 0)
+					throw new Error(
+						"require-trusted-types-for requires at least one value",
+					);
+				(values as typeof RequiredTrustedTypesForElements).forEach((value) => {
+					if (!RequiredTrustedTypesForElements.includes(value))
+						throw new Error(
+							`Invalid value for require-trusted-types-for: ${value}`,
+						);
+				});
+				values = values.map((value) => quote(value));
+				break;
 		}
-
-		if ([TrustedTypesFlag, RequiredTrustedTypesForFlag].includes(name)) {
-			values = values.map((value) => quote(value));
-		}
-
 		values.forEach((value) => this.#flags.get(name)?.add(value));
 		return this;
 	}

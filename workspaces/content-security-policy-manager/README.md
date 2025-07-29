@@ -17,6 +17,42 @@ script-src 'self' *.example.com; style-src 'self' *.example.com; upgrade-insecur
 |------------------------------------------------------ Policy --------------------------------------------------|
 ```
 
+```mermaid
+graph TD
+    A[CSP Policy] --> B[Rules]
+    A --> C[Flags]
+
+    B --> D[Rule: script-src 'self' *.example.com]
+    B --> E[Rule: style-src 'self' *.example.com]
+
+    D --> F[Directive: script-src]
+    D --> G[Sources]
+    G --> H['self']
+    G --> I[*.example.com]
+
+    E --> J[Directive: style-src]
+    E --> K[Sources]
+    K --> L['self']
+    K --> M[*.example.com]
+
+    C --> N[Flag: upgrade-insecure-requests]
+    C --> O[Flag: report-to csp-endpoint]
+
+    N --> P[Name: upgrade-insecure-requests]
+    N --> Q[Value: none]
+
+    O --> R[Name: report-to]
+    O --> S[Value: csp-endpoint]
+
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style F fill:#fff3e0
+    style J fill:#fff3e0
+    style P fill:#fce4ec
+    style R fill:#fce4ec
+```
+
 ## Usage
 
 ### Create a CSP
