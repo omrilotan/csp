@@ -1,5 +1,8 @@
-import { CSPDirectives, CSPSourceKeywords, flags } from "../constants/index.ts";
-export type { CSPFlag } from "../constants/index.ts";
+import {
+	CSPDirectives,
+	CSPSourceKeywords,
+	CSPFlags,
+} from "../constants/index.ts";
 
 /**
  * Trusted Types restrict usage of known DOM XSS sink

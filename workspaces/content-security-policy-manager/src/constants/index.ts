@@ -91,7 +91,7 @@ export type CSPFlag =
 	 * reporting CSP violations and NEL
 	 */
 	| "report-to";
-export const flags: CSPFlag[] = [
+export const CSPFlags: CSPFlag[] = [
 	"upgrade-insecure-requests",
 	"report-to",
 	"plugin-types",

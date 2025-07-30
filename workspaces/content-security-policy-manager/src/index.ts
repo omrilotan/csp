@@ -2,14 +2,13 @@ import type {
 	CSPPluginType,
 	CSPSource,
 	CSPTrustedType,
-	CSPFlag,
 	CSPViolationReport,
 } from "./types/index.ts";
 import {
 	CSPDirectives,
 	CSPSourceKeywords,
 	CSPSourceExpressions,
-	flags,
+	CSPFlags,
 	TrustedTypesFlag,
 	RequiredTrustedTypesForFlag,
 	RequiredTrustedTypesForElements,
@@ -18,15 +17,14 @@ import { quote, quoteSource, unquote } from "./quotes/index.ts";
 import { validateTrustedTypes } from "./validateTrustedTypes/index.ts";
 import { sortSources } from "./sortSources/index.ts";
 
-export { CSPDirectives, CSPSourceKeywords };
-export type { CSPFlag };
+export { CSPFlags, CSPDirectives, CSPSourceKeywords };
 
 /**
  * A Content Security Policy (CSP) structure
  */
 export class ContentSecurityPolicyManager {
 	#rules: Map<CSPSource, Set<ArrayElement<typeof CSPDirectives>>>;
-	#flags: Map<CSPFlag, Set<string>>;
+	#flags: Map<ArrayElement<typeof CSPFlags>, Set<string>>;
 
 	constructor() {
 		this.#rules = new Map();
@@ -39,7 +37,7 @@ export class ContentSecurityPolicyManager {
 	load(header: string): this {
 		header.split(";").forEach((rule) => {
 			const [directive, ...sources] = rule.trim().split(" ");
-			if (flags.includes(directive as CSPFlag)) {
+			if (CSPFlags.includes(directive as ArrayElement<typeof CSPFlags>)) {
 				this.set(directive as any, ...sources);
 			} else {
 				sources.forEach((source) =>
@@ -114,7 +112,7 @@ export class ContentSecurityPolicyManager {
 			ArrayElement<typeof RequiredTrustedTypesForElements>
 		>
 	): this;
-	set(name: ArrayElement<typeof flags>, ...values: string[]): this {
+	set(name: ArrayElement<typeof CSPFlags>, ...values: string[]): this {
 		if (!this.#flags.has(name)) this.#flags.set(name, new Set());
 		values = values.map(unquote);
 
@@ -167,7 +165,7 @@ export class ContentSecurityPolicyManager {
 	/**
 	 * Remove a flag
 	 */
-	erase(name: CSPFlag): this {
+	erase(name: ArrayElement<typeof CSPFlags>): this {
 		this.#flags.delete(name);
 		return this;
 	}
@@ -186,7 +184,7 @@ export class ContentSecurityPolicyManager {
 	 */
 	toJSON(): {
 		rules: Record<CSPSource, ArrayElement<typeof CSPDirectives>[]>;
-		flags: Record<CSPFlag | string, string[]>;
+		flags: Record<ArrayElement<typeof CSPFlags> | string, string[]>;
 	} {
 		return {
 			rules: Object.fromEntries(
@@ -224,7 +222,7 @@ export class ContentSecurityPolicyManager {
 	/**
 	 * Get the flags in a sorted array
 	 */
-	get flags(): [CSPFlag, string[]][] {
+	get flags(): [ArrayElement<typeof CSPFlags>, string[]][] {
 		return Array.from(this.#flags).map(([directive, values]) => [
 			directive,
 			Array.from(values),

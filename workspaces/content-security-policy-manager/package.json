@@ -1,6 +1,6 @@
 {
   "name": "content-security-policy-manager",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "🔒 Manage Content Security Policy by Vendor (Source) first",
   "keywords": [
     "content security policy",
