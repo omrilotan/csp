@@ -75,7 +75,7 @@ export default function Home() {
 			}
 		});
 
-		 // Merge the current rulesTable with csp.rules to preserve empty rows
+		// Merge the current rulesTable with csp.rules to preserve empty rows
 		const mergedRules = updatedRules.map(([directive, values]) => {
 			const existingRule = csp.rules.find(([d]) => d === directive);
 			return existingRule || [directive, values];

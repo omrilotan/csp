@@ -27,6 +27,20 @@ describe("content-security-policy-manager", (): void => {
 		);
 		csp.set("report-to", "csp-endpoint");
 	});
+
+	test("Order of adding rules does not affect output", (): void => {
+		const csp1 = new ContentSecurityPolicyManager();
+		csp1.add("a", "script-src", "style-src");
+		csp1.add("b", "connect-src");
+		csp1.add("c", "style-src");
+
+		const csp2 = new ContentSecurityPolicyManager();
+		csp2.add("b", "connect-src");
+		csp2.add("a", "style-src", "script-src");
+		csp2.add("c", "style-src");
+
+		equal(csp1.toString(), csp2.toString());
+	});
 	test("getter: rules", (context): void => {
 		context.assert.snapshot(csp.rules);
 	});

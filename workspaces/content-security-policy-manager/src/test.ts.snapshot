@@ -6,8 +6,8 @@ exports[`adjust > adjust directives based on reports 1`] = `
       [
         "accounts.google.com",
         [
-          "style-src-elem",
-          "script-src-elem"
+          "script-src-elem",
+          "style-src-elem"
         ]
       ],
       [
@@ -101,10 +101,10 @@ exports[`adjust > adjust directives based on reports 1`] = `
       [
         "inline",
         [
-          "script-src-elem",
-          "style-src-elem",
           "script-src-attr",
-          "style-src-attr"
+          "script-src-elem",
+          "style-src-attr",
+          "style-src-elem"
         ]
       ],
       [
@@ -137,8 +137,18 @@ exports[`adjust > adjust directives based on reports 1`] = `
 exports[`content-security-policy-manager > getter: flags 1`] = `
 [
   [
-    "upgrade-insecure-requests",
-    []
+    "plugin-types",
+    [
+      "application/pdf",
+      "application/x-java-applet",
+      "application/x-shockwave-flash"
+    ]
+  ],
+  [
+    "report-to",
+    [
+      "csp-endpoint"
+    ]
   ],
   [
     "require-trusted-types-for",
@@ -153,18 +163,8 @@ exports[`content-security-policy-manager > getter: flags 1`] = `
     ]
   ],
   [
-    "plugin-types",
-    [
-      "application/pdf",
-      "application/x-shockwave-flash",
-      "application/x-java-applet"
-    ]
-  ],
-  [
-    "report-to",
-    [
-      "csp-endpoint"
-    ]
+    "upgrade-insecure-requests",
+    []
   ]
 ]
 `;
@@ -250,7 +250,7 @@ exports[`content-security-policy-manager > json snapshot 1`] = `
 `;
 
 exports[`content-security-policy-manager > string snapshot 1`] = `
-"script-src 'self' 'unsafe-eval' 'unsafe-inline' *.example.com https://example.com; style-src 'self' *.example.com https://example.com; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types 'allow-duplicates'; plugin-types application/pdf application/x-shockwave-flash application/x-java-applet; report-to csp-endpoint"
+"script-src 'self' 'unsafe-eval' 'unsafe-inline' *.example.com https://example.com; style-src 'self' *.example.com https://example.com; plugin-types application/pdf application/x-java-applet application/x-shockwave-flash; report-to csp-endpoint; require-trusted-types-for 'script'; trusted-types 'allow-duplicates'; upgrade-insecure-requests"
 `;
 
 exports[`content-security-policy-manager > table snapshot 1`] = `
@@ -297,8 +297,18 @@ exports[`content-security-policy-manager > table snapshot 1`] = `
     "flags",
     [
       [
-        "upgrade-insecure-requests",
-        []
+        "plugin-types",
+        [
+          "application/pdf",
+          "application/x-java-applet",
+          "application/x-shockwave-flash"
+        ]
+      ],
+      [
+        "report-to",
+        [
+          "csp-endpoint"
+        ]
       ],
       [
         "require-trusted-types-for",
@@ -313,18 +323,8 @@ exports[`content-security-policy-manager > table snapshot 1`] = `
         ]
       ],
       [
-        "plugin-types",
-        [
-          "application/pdf",
-          "application/x-shockwave-flash",
-          "application/x-java-applet"
-        ]
-      ],
-      [
-        "report-to",
-        [
-          "csp-endpoint"
-        ]
+        "upgrade-insecure-requests",
+        []
       ]
     ]
   ]

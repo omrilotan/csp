@@ -211,7 +211,7 @@ export class ContentSecurityPolicyManager {
 				([scope, directives]: [
 					CSPSource,
 					Set<ArrayElement<typeof CSPDirectives>>,
-				]) => [scope, Array.from(directives)],
+				]) => [scope, Array.from(directives).sort()],
 			)
 			.sort(sortSources as any) as [
 			CSPSource,
@@ -223,10 +223,12 @@ export class ContentSecurityPolicyManager {
 	 * Get the flags in a sorted array
 	 */
 	get flags(): [ArrayElement<typeof CSPFlags>, string[]][] {
-		return Array.from(this.#flags).map(([directive, values]) => [
-			directive,
-			Array.from(values),
-		]);
+		return Array.from(this.#flags)
+			.map(([directive, values]) => [directive, Array.from(values).sort()])
+			.sort(([a], [b]) => (a as string).localeCompare(b as string)) as [
+			ArrayElement<typeof CSPFlags>,
+			string[],
+		][];
 	}
 
 	/**
@@ -260,7 +262,11 @@ export class ContentSecurityPolicyManager {
 				},
 				{} as Record<ArrayElement<typeof CSPDirectives>, CSPSource[]>,
 			),
-		).map(([directive, sources]) => [directive, sources.join(" ")].join(" "));
+		)
+			.sort((a, b) => a[0].localeCompare(b[0]))
+			.map(([directive, sources]) =>
+				[directive, sources.sort().join(" ")].join(" "),
+			);
 
 		const flags = this.flags.map(([directive, values]) =>
 			[directive, ...values].join(" "),
