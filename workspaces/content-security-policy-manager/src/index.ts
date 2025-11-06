@@ -16,6 +16,7 @@ import {
 import { quote, quoteSource, unquote } from "./quotes/index.ts";
 import { validateTrustedTypes } from "./validateTrustedTypes/index.ts";
 import { sortSources } from "./sortSources/index.ts";
+import { removeRedundantSources } from "./removeRedundantSources/index.ts";
 
 export { CSPFlags, CSPDirectives, CSPSourceKeywords };
 
@@ -265,7 +266,7 @@ export class ContentSecurityPolicyManager {
 		)
 			.sort((a, b) => a[0].localeCompare(b[0]))
 			.map(([directive, sources]) =>
-				[directive, sources.sort().join(" ")].join(" "),
+				[directive, removeRedundantSources(sources.sort().join(" "))].join(" "),
 			);
 
 		const flags = this.flags.map(([directive, values]) =>

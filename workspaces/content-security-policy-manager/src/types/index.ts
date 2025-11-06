@@ -4,6 +4,8 @@ import {
 	CSPFlags,
 } from "../constants/index.ts";
 
+export { CSPFlags };
+
 /**
  * Trusted Types restrict usage of known DOM XSS sink
  */

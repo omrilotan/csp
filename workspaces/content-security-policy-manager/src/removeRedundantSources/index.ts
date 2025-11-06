@@ -1,108 +1,161 @@
 /**
- * Remove redundant CSP sources from a sources string
- * @param sources - Space-separated CSP sources
- * @returns Cleaned up sources string with redundancies removed
+ * Strip URL protocol from a source token
  */
-// Helper: strip URL protocol from a policy token
 function stripProtocol(source: string): string {
-	return source.replace(/^https?:\/\//, '');
+	return source.replace(/^https?:\/{2}/, "");
 }
 
-// Helper: does token include protocol
-function hasProtocol(source: string): boolean {
-	return /^https?:\/\//.test(source);
+/** Keyword sources like 'self', 'unsafe-eval' */
+function isKeyword(token: string): boolean {
+	return token.startsWith("'");
 }
 
-// Helper: is token a wildcard expression
-function isWildcard(policy: string): boolean {
-	return policy.startsWith('*.');
+/** Wildcard sources like *.example.com */
+function isWildcard(token: string): boolean {
+	return token.startsWith("*.");
 }
 
-// Helper: does domain match wildcard
-function matchesWildcard(domain: string, wildcard: string): boolean {
-	const base = wildcard.slice(2);
-	return domain.endsWith('.' + base) || domain === base;
+/** Lowercased, protocol-stripped domain for comparisons */
+function normalizeDomain(source: string): string {
+	return stripProtocol(source).toLowerCase();
 }
 
-export function removeRedundantSources(sources: string): string {
-	const policyArray = sources.trim().split(/\s+/);
+const HTTP_RE = /^http:\/{2}/i;
+const HTTPS_RE = /^https:\/{2}/i;
 
-	// Analyze input: track protocol usage per bare domain
-	const bareVersions = new Map<string, { hasProtocol: boolean; noProtocol: boolean }>();
-	for (const policy of policyArray) {
-		const bare = stripProtocol(policy);
-		if (!bareVersions.has(bare)) {
-			bareVersions.set(bare, { hasProtocol: false, noProtocol: false });
+/**
+ * Remove redundant CSP sources from a sources string
+ *
+ * Algorithm (order-preserving):
+ * 1) Tokenize the input into keywords, wildcards and domains.
+ * 2) Group domains by their bare form (protocol removed, lowercased) to detect protocol redundancy.
+ * 3) Precompute which wildcard bases (*.example.com) have explicit subdomains listed.
+ * 4) Iterate original tokens in order and build the output while skipping anything covered by a wildcard
+ *    and consolidating http/https to the bare domain when both exist.
+ */
+export function removeRedundantSources(
+	/**
+	 * Space-separated CSP sources
+	 */
+	sources: string,
+): string {
+	const tokens = sources.trim().match(/\S+/g) ?? [];
+
+	// Collect wildcards and group domains
+	const wildcards: string[] = [];
+	type DomainGroup = {
+		hasBare: boolean;
+		hasHttp: boolean;
+		hasHttps: boolean;
+		firstSeenToken: string; // original token as first seen
+		firstSeenBare: string; // bare domain as first seen
+	};
+	const domains = new Map<string, DomainGroup>(); // key = normalized bare domain
+
+	for (const token of tokens) {
+		if (isKeyword(token)) continue; // handled directly while emitting
+		if (isWildcard(token)) {
+			wildcards.push(token);
+			continue;
 		}
-		bareVersions.get(bare)![hasProtocol(policy) ? 'hasProtocol' : 'noProtocol'] = true;
+
+		const bare = stripProtocol(token);
+		const key = normalizeDomain(token);
+		const prev = domains.get(key);
+		const isHttp = HTTP_RE.test(token);
+		const isHttps = HTTPS_RE.test(token);
+		domains.set(key, {
+			hasBare: (prev?.hasBare ?? false) || (!isHttp && !isHttps),
+			hasHttp: (prev?.hasHttp ?? false) || isHttp,
+			hasHttps: (prev?.hasHttps ?? false) || isHttps,
+			firstSeenToken: prev?.firstSeenToken ?? token,
+			firstSeenBare: prev?.firstSeenBare ?? bare,
+		});
 	}
 
-	// Build result
-	const result: string[] = [];
-
-	for (const policy of policyArray) {
-		const bare = stripProtocol(policy);
-
-
-
-		// Check if redundant with existing results
-		let redundant = false;
-		for (const existing of result) {
-			const existingBare = stripProtocol(existing);
-
-			// Covered by wildcard
-			if (isWildcard(existing) && matchesWildcard(bare, existing)) {
-				// Also remove base domain if subdomains exist
-				const hasSubdomains = policyArray.some(p => {
-					const b = stripProtocol(p);
-					return b.endsWith('.' + existing.slice(2)) && !isWildcard(b);
-				});
-				if (bare === existing.slice(2) && !hasSubdomains) {
-					continue; // Keep base domain
-				}
-				redundant = true;
-				break;
-			}
-
-			// Duplicate (same bare domain)
-			if (bare === existingBare) {
-				const info = bareVersions.get(bare)!;
-				// Replace protocol version with bare if both protocols exist and no bare version
-				if (info.hasProtocol && !info.noProtocol && hasProtocol(existing)) {
-					result[result.indexOf(existing)] = bare;
-				}
-				// Replace protocol with non-protocol
-				else if (hasProtocol(existing) && !hasProtocol(policy)) {
-					result[result.indexOf(existing)] = policy;
-				}
-				redundant = true;
-				break;
-			}
-		}
-
-		if (redundant) continue;
-
-		// If adding a wildcard, remove covered domains
-		if (isWildcard(policy)) {
-			const hasSubdomains = policyArray.some(p => {
-				const b = stripProtocol(p);
-				return b.endsWith('.' + policy.slice(2)) && !isWildcard(b);
-			});
-
-			for (let i = result.length - 1; i >= 0; i--) {
-				const existingBare = stripProtocol(result[i]);
-				if (matchesWildcard(existingBare, policy)) {
-					// Only remove base if subdomains were present
-					if (existingBare === policy.slice(2) && !hasSubdomains) {
-						continue;
-					}
-					result.splice(i, 1);
+	// For each wildcard base, check if there are explicit subdomains
+	const wildcardBases = wildcards.map((wildcard) =>
+		wildcard.slice(2).toLowerCase(),
+	);
+	const wildcardBaseHasSubdomains = new Map<string, boolean>();
+	for (const baseDomain of wildcardBases)
+		wildcardBaseHasSubdomains.set(baseDomain, false);
+	if (wildcardBases.length) {
+		for (const domainKey of domains.keys()) {
+			for (const baseDomain of wildcardBases) {
+				if (domainKey !== baseDomain && domainKey.endsWith("." + baseDomain)) {
+					wildcardBaseHasSubdomains.set(baseDomain, true);
 				}
 			}
 		}
-
-		result.push(policy);
 	}
 
-	return result.join(' ');
+	// Choose canonical token for a group
+	const chooseCanonical = (group: DomainGroup): string => {
+		if (group.hasBare) return group.firstSeenBare; // prefer bare when present
+		if (group.hasHttp && group.hasHttps) return group.firstSeenBare; // consolidate to bare
+		return group.firstSeenToken; // keep original form
+	};
+
+	const output: string[] = [];
+	const seen = new Set<string>();
+
+	const removeCoveredByWildcard = (wildcard: string) => {
+		const baseDomain = wildcard.slice(2).toLowerCase();
+		for (let i = output.length - 1; i >= 0; i--) {
+			const resultToken = output[i];
+			if (isWildcard(resultToken)) continue; // don't remove other wildcards here
+			const resultKey = normalizeDomain(resultToken);
+			const isBase = resultKey === baseDomain;
+			const isSubdomain = !isBase && resultKey.endsWith("." + baseDomain);
+			// Wildcards only cover subdomains, never the base domain
+			if (isSubdomain) {
+				seen.delete(resultToken);
+				output.splice(i, 1);
+			}
+		}
+	};
+
+	for (const token of tokens) {
+		if (isKeyword(token)) {
+			if (!seen.has(token)) {
+				output.push(token);
+				seen.add(token);
+			}
+			continue;
+		}
+		if (isWildcard(token)) {
+			if (!seen.has(token)) {
+				// remove any already-added covered tokens
+				removeCoveredByWildcard(token);
+				output.push(token);
+				seen.add(token);
+			}
+			continue;
+		}
+
+		const domainKey = normalizeDomain(token);
+		const group = domains.get(domainKey)!;
+		const canonical = chooseCanonical(group);
+
+		// Skip if covered by any wildcard
+		let covered = false;
+		for (const baseDomain of wildcardBases) {
+			const isBase = domainKey === baseDomain;
+			const isSubdomain = !isBase && domainKey.endsWith("." + baseDomain);
+			// Wildcards only cover subdomains, never the base domain
+			if (isSubdomain) {
+				covered = true;
+				break;
+			}
+		}
+		if (covered) continue;
+
+		if (!seen.has(canonical)) {
+			output.push(canonical);
+			seen.add(canonical);
+		}
+	}
+
+	return output.sort().join(" ");
 }

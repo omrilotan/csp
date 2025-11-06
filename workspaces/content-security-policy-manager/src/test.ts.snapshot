@@ -203,6 +203,18 @@ exports[`content-security-policy-manager > getter: rules 1`] = `
       "script-src",
       "style-src"
     ]
+  ],
+  [
+    "subdomain.example.com",
+    [
+      "style-src"
+    ]
+  ],
+  [
+    "www.example.com",
+    [
+      "style-src"
+    ]
   ]
 ]
 `;
@@ -222,6 +234,12 @@ exports[`content-security-policy-manager > json snapshot 1`] = `
     ],
     "*.example.com": [
       "script-src",
+      "style-src"
+    ],
+    "www.example.com": [
+      "style-src"
+    ],
+    "subdomain.example.com": [
       "style-src"
     ],
     "https://example.com": [
@@ -288,6 +306,18 @@ exports[`content-security-policy-manager > table snapshot 1`] = `
         "https://example.com",
         [
           "script-src",
+          "style-src"
+        ]
+      ],
+      [
+        "subdomain.example.com",
+        [
+          "style-src"
+        ]
+      ],
+      [
+        "www.example.com",
+        [
           "style-src"
         ]
       ]

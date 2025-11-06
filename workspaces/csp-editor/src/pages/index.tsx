@@ -3,12 +3,8 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import React from "react";
-import {
-	ContentSecurityPolicyManager,
-	CSPDirectives,
-	CSPSourceKeywords,
-} from "../../../content-security-policy-manager/src";
-import { CSPFlag } from "../../../content-security-policy-manager/src/types";
+import { ContentSecurityPolicyManager } from "../../../content-security-policy-manager/src";
+import { CSPFlags } from "../../../content-security-policy-manager/src/types";
 
 export default function Home() {
 	// Add this state to track if textarea has been populated
@@ -192,7 +188,7 @@ export default function Home() {
 		} else {
 			// Otherwise update with new flag or values
 			updatedFlags[index] = [
-				(newFlag as CSPFlag) || flag,
+				(newFlag as ArrayElement<typeof CSPFlags>) || flag,
 				modifyValues ? modifyValues(values) : values,
 			];
 		}

@@ -14,6 +14,8 @@ describe("content-security-policy-manager", (): void => {
 		csp
 			.add("*.example.com", "script-src")
 			.add("*.example.com", "style-src")
+			.add("www.example.com", "style-src")
+			.add("subdomain.example.com", "style-src")
 			.add("*.example.com", "style-src");
 		csp.add("https://example.com", "script-src", "style-src");
 		csp.set("upgrade-insecure-requests");

@@ -25,6 +25,6 @@
     "ts-loader": "^9.5.2",
     "typescript": "^5",
     "vercel": "^41.4.0",
-    "wrangler": "^3.114.1"
+    "wrangler": "^4.46.0"
   }
 }
