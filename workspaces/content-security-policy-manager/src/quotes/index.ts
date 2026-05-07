@@ -11,7 +11,7 @@ export const unquote = (value: string): string =>
 export const quote = (value: string): string => `'${unquote(value)}'`;
 
 export const quoteSource = (
-	source: ArrayElement<typeof CSPSourceExpressions>,
+	source: (typeof CSPSourceExpressions)[number],
 ): string =>
 	CSPSourceExpressions.includes(source) ||
 	// Nonce: A server generated random value for every HTTP response

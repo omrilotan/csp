@@ -6,10 +6,10 @@ export function sortSources(
 	[b]: [CSPSource, any[]],
 ): number {
 	const aIsKeyword = CSPSourceKeywords.includes(
-		a as ArrayElement<typeof CSPSourceKeywords>,
+		a as (typeof CSPSourceKeywords)[number],
 	);
 	const bIsKeyword = CSPSourceKeywords.includes(
-		b as ArrayElement<typeof CSPSourceKeywords>,
+		b as (typeof CSPSourceKeywords)[number],
 	);
 	if (aIsKeyword && !bIsKeyword) return -1;
 	if (!aIsKeyword && bIsKeyword) return 1;

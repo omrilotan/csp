@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.0.25
+
+- Typescript updates, Add LICENSE file
+
 ## 0.0.24
 
 - Remove redundancies in source lists (e.g. if both www.example.com and \*.example.com are present, remove www.example.com)

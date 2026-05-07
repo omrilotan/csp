@@ -188,7 +188,7 @@ export default function Home() {
 		} else {
 			// Otherwise update with new flag or values
 			updatedFlags[index] = [
-				(newFlag as ArrayElement<typeof CSPFlags>) || flag,
+				(newFlag as (typeof CSPFlags)[number]) || flag,
 				modifyValues ? modifyValues(values) : values,
 			];
 		}

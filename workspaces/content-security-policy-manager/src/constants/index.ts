@@ -1,53 +1,26 @@
 /**
  * Special keywords that allow broader control over the content's security
  */
-export const CSPSourceExpressions: (
-	| "self"
-	| "eval"
-	| "inline"
-	| "unsafe-eval"
-	| "wasm-unsafe-eval"
-	| "unsafe-inline"
-	| "unsafe-hashes"
-	/**
-	 * Speculation rules defined on Speculation-Rules HTTP response header or <script type="speculationrules"> elements
-	 * @warning Experimental
-	 */
-	| "inline-speculation-rules"
-	| "strict-dynamic"
-	/**
-	 * The violation report that the browser generates will contain a sample property containing the first 40 characters of the blocked resource
-	 */
-	| "report-sample"
-	| "none"
-)[] = [
+export const CSPSourceExpressions = [
 	"self",
 	"unsafe-eval",
 	"wasm-unsafe-eval",
 	"unsafe-inline",
 	"unsafe-hashes",
+	/**
+	 * Speculation rules defined on Speculation-Rules HTTP response header or <script type="speculationrules"> elements
+	 * @warning Experimental
+	 */
 	"inline-speculation-rules",
 	"strict-dynamic",
+	/**
+	 * The violation report that the browser generates will contain a sample property containing the first 40 characters of the blocked resource
+	 */
 	"report-sample",
 	"none",
-];
+] as const;
 
-export const CSPSourceKeywords: (
-	| "*"
-	| "data:"
-	| "blob:"
-	| "mediastream:"
-	| "filesystem:"
-	| "self"
-	| "unsafe-eval"
-	| "wasm-unsafe-eval"
-	| "unsafe-inline"
-	| "unsafe-hashes"
-	| "inline-speculation-rules"
-	| "strict-dynamic"
-	| "report-sample"
-	| "none"
-)[] = [
+export const CSPSourceKeywords = [
 	"*",
 	"data:",
 	"blob:",
@@ -62,7 +35,7 @@ export const CSPSourceKeywords: (
 	"strict-dynamic",
 	"report-sample",
 	"none",
-];
+] as const;
 
 /**
  * CSP flags affect the entire policy
@@ -97,7 +70,7 @@ export const CSPFlags: CSPFlag[] = [
 	"plugin-types",
 	"trusted-types",
 	"require-trusted-types-for",
-];
+] as const;
 
 export const TrustedTypesFlag = "trusted-types";
 export const RequiredTrustedTypesForFlag = "require-trusted-types-for";
@@ -105,140 +78,112 @@ export const RequiredTrustedTypesForFlag = "require-trusted-types-for";
 /**
  * Which elements require Trusted Types
  */
-export const RequiredTrustedTypesForElements: ("script" | "style")[] = [
-	"script",
-	"style",
-];
+export const RequiredTrustedTypesForElements = ["script", "style"] as const;
 
 /**
  * CSP Directive
  * @see https://content-security-policy.com/
  * @see https://developer.mozilla.org/docs/Web/HTTP/Headers/Content-Security-Policy
  */
-export const CSPDirectives: /**
- * <base>
- */
-(
-	| "base-uri"
+export const CSPDirectives = [
+	/**
+	 * <base>
+	 */
+	"base-uri",
 	/**
 	 * Web workers, <frame> and <iframe>
 	 */
-	| "child-src"
+	"child-src",
 	/**
 	 * Script interfaces (ping, XHR, fetch, sendBeacon, WebSocket, etc.)
 	 */
-	| "connect-src"
+	"connect-src",
 	/**
 	 * Fallback for the other CSP fetch directives
 	 */
-	| "default-src"
+	"default-src",
 	/**
 	 * <fencedframe>
 	 * @warning Experimental
 	 */
-	| "fenced-frame-src"
+	"fenced-frame-src",
 	/**
 	 * Fonts
 	 */
-	| "font-src"
+	"font-src",
 	/**
 	 * Form submission target
 	 */
-	| "form-action"
+	"form-action",
 	/**
 	 * <frame> <iframe> <object> <embed>
 	 */
-	| "frame-ancestors"
+	"frame-ancestors",
 	/**
 	 * <frame> <iframe>
 	 */
-	| "frame-src"
+	"frame-src",
 	/**
 	 * Images and favicons.
 	 */
-	| "img-src"
+	"img-src",
 	/**
 	 * Manifest file
 	 */
-	| "manifest-src"
+	"manifest-src",
 	/**
 	 * <audio> <video>
 	 */
-	| "media-src"
+	"media-src",
 	/**
 	 * Links, Form submissions, window.location setter, window.open…
 	 * @warning Experimental
 	 */
-	| "navigate-to"
+	"navigate-to",
 	/**
 	 * security attributes sandbox or allow for <iframe>
 	 */
-	| "object-src"
+	"object-src",
 	/**
 	 * Prefetched or prerendered
 	 * @warning Deprecated
 	 */
-	| "prefetch-src"
+	"prefetch-src",
 	/**
 	 * Use "report-to" instead
 	 * @warning Deprecated
 	 */
-	| "report-uri"
+	"report-uri",
 	/**
 	 * A sandbox for the requested resource similar to the <iframe> sandbox attribute
 	 */
-	| "sandbox"
+	"sandbox",
 	/**
-	 *  inline script event handlers like onclick only
+	 * Inline script event handlers like onclick only
 	 */
-	| "script-src-attr"
+	"script-src-attr",
 	/**
 	 * <script>
 	 */
-	| "script-src-elem"
+	"script-src-elem",
 	/**
 	 * <script> elements, inline script event handlers (onclick) and XSLT stylesheets
 	 */
-	| "script-src"
+	"script-src",
 	/**
 	 * <link rel="stylesheet">
 	 */
-	| "style-src-attr"
+	"style-src-attr",
 	/**
 	 * <link rel="stylesheet">
 	 */
-	| "style-src-elem"
+	"style-src-elem",
 	/**
 	 * stylesheets
 	 */
-	| "style-src"
+	"style-src",
 	/**
 	 * Worker, SharedWorker, or ServiceWorker scripts
 	 */
-	| "worker-src"
-)[] = [
-	"base-uri",
-	"child-src",
-	"connect-src",
-	"default-src",
-	"fenced-frame-src",
-	"font-src",
-	"form-action",
-	"frame-ancestors",
-	"frame-src",
-	"img-src",
-	"manifest-src",
-	"media-src",
-	"navigate-to",
-	"object-src",
-	"prefetch-src",
-	"report-uri",
-	"sandbox",
-	"script-src-attr",
-	"script-src-elem",
-	"script-src",
-	"style-src-attr",
-	"style-src-elem",
-	"style-src",
 	"worker-src",
-];
+] as const;

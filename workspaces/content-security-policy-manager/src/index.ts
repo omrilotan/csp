@@ -24,8 +24,8 @@ export { CSPFlags, CSPDirectives, CSPSourceKeywords };
  * A Content Security Policy (CSP) structure
  */
 export class ContentSecurityPolicyManager {
-	#rules: Map<CSPSource, Set<ArrayElement<typeof CSPDirectives>>>;
-	#flags: Map<ArrayElement<typeof CSPFlags>, Set<string>>;
+	#rules: Map<CSPSource, Set<(typeof CSPDirectives)[number]>>;
+	#flags: Map<(typeof CSPFlags)[number], Set<string>>;
 
 	constructor() {
 		this.#rules = new Map();
@@ -38,11 +38,11 @@ export class ContentSecurityPolicyManager {
 	load(header: string): this {
 		header.split(";").forEach((rule) => {
 			const [directive, ...sources] = rule.trim().split(" ");
-			if (CSPFlags.includes(directive as ArrayElement<typeof CSPFlags>)) {
-				this.set(directive as any, ...sources);
+			if (CSPFlags.includes(directive as (typeof CSPFlags)[number])) {
+				this.set(directive as (typeof CSPFlags)[number] as any, ...sources);
 			} else {
 				sources.forEach((source) =>
-					this.add(source, directive as ArrayElement<typeof CSPDirectives>),
+					this.add(source, directive as (typeof CSPDirectives)[number]),
 				);
 			}
 		});
@@ -69,10 +69,7 @@ export class ContentSecurityPolicyManager {
 	/**
 	 * Add a directive to a scope
 	 */
-	add(
-		scope: CSPSource,
-		...directives: ArrayElement<typeof CSPDirectives>[]
-	): this {
+	add(scope: CSPSource, ...directives: (typeof CSPDirectives)[number][]): this {
 		if (directives.length === 0) return this;
 		if (!this.#rules.has(scope)) this.#rules.set(scope, new Set());
 		directives.forEach((directive) => this.#rules.get(scope)?.add(directive));
@@ -84,7 +81,7 @@ export class ContentSecurityPolicyManager {
 	 */
 	remove(
 		scope: CSPSource,
-		...directives: ArrayElement<typeof CSPDirectives>[]
+		...directives: (typeof CSPDirectives)[number][]
 	): this {
 		if (!this.#rules.has(scope)) return this;
 		if (directives.length === 0) {
@@ -109,11 +106,9 @@ export class ContentSecurityPolicyManager {
 	): this;
 	set(
 		name: typeof RequiredTrustedTypesForFlag,
-		...values: NonEmptyArray<
-			ArrayElement<typeof RequiredTrustedTypesForElements>
-		>
+		...values: NonEmptyArray<(typeof RequiredTrustedTypesForElements)[number]>
 	): this;
-	set(name: ArrayElement<typeof CSPFlags>, ...values: string[]): this {
+	set(name: (typeof CSPFlags)[number], ...values: string[]): this {
 		if (!this.#flags.has(name)) this.#flags.set(name, new Set());
 		values = values.map(unquote);
 
@@ -150,12 +145,14 @@ export class ContentSecurityPolicyManager {
 					throw new Error(
 						"require-trusted-types-for requires at least one value",
 					);
-				(values as typeof RequiredTrustedTypesForElements).forEach((value) => {
-					if (!RequiredTrustedTypesForElements.includes(value))
-						throw new Error(
-							`Invalid value for require-trusted-types-for: ${value}`,
-						);
-				});
+				(values as (typeof RequiredTrustedTypesForElements)[number][]).forEach(
+					(value) => {
+						if (!RequiredTrustedTypesForElements.includes(value))
+							throw new Error(
+								`Invalid value for require-trusted-types-for: ${value}`,
+							);
+					},
+				);
 				values = values.map((value) => quote(value));
 				break;
 		}
@@ -166,7 +163,7 @@ export class ContentSecurityPolicyManager {
 	/**
 	 * Remove a flag
 	 */
-	erase(name: ArrayElement<typeof CSPFlags>): this {
+	erase(name: (typeof CSPFlags)[number]): this {
 		this.#flags.delete(name);
 		return this;
 	}
@@ -184,8 +181,8 @@ export class ContentSecurityPolicyManager {
 	 * Expose the structure of the underlying Map
 	 */
 	toJSON(): {
-		rules: Record<CSPSource, ArrayElement<typeof CSPDirectives>[]>;
-		flags: Record<ArrayElement<typeof CSPFlags> | string, string[]>;
+		rules: Record<CSPSource, (typeof CSPDirectives)[number][]>;
+		flags: Record<(typeof CSPFlags)[number] | string, string[]>;
 	} {
 		return {
 			rules: Object.fromEntries(
@@ -206,28 +203,28 @@ export class ContentSecurityPolicyManager {
 	/**
 	 * Get the rules in a sorted array
 	 */
-	get rules(): [CSPSource, typeof CSPDirectives][] {
+	get rules(): [CSPSource, (typeof CSPDirectives)[number][]][] {
 		return Array.from(this.#rules)
 			.map(
 				([scope, directives]: [
 					CSPSource,
-					Set<ArrayElement<typeof CSPDirectives>>,
+					Set<(typeof CSPDirectives)[number]>,
 				]) => [scope, Array.from(directives).sort()],
 			)
 			.sort(sortSources as any) as [
 			CSPSource,
-			ArrayElement<typeof CSPDirectives>[],
+			(typeof CSPDirectives)[number][],
 		][];
 	}
 
 	/**
 	 * Get the flags in a sorted array
 	 */
-	get flags(): [ArrayElement<typeof CSPFlags>, string[]][] {
+	get flags(): [(typeof CSPFlags)[number], string[]][] {
 		return Array.from(this.#flags)
 			.map(([directive, values]) => [directive, Array.from(values).sort()])
 			.sort(([a], [b]) => (a as string).localeCompare(b as string)) as [
-			ArrayElement<typeof CSPFlags>,
+			(typeof CSPFlags)[number],
 			string[],
 		][];
 	}
@@ -256,12 +253,12 @@ export class ContentSecurityPolicyManager {
 						if (!Object.hasOwn(accumulator, directive))
 							accumulator[directive] = [];
 						accumulator[directive].push(
-							quoteSource(source as ArrayElement<typeof CSPSourceExpressions>),
+							quoteSource(source as (typeof CSPSourceExpressions)[number]),
 						);
 					});
 					return accumulator;
 				},
-				{} as Record<ArrayElement<typeof CSPDirectives>, CSPSource[]>,
+				{} as Record<(typeof CSPDirectives)[number], CSPSource[]>,
 			),
 		)
 			.sort((a, b) => a[0].localeCompare(b[0]))

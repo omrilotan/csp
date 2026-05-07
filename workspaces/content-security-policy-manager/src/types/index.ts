@@ -19,7 +19,7 @@ export type CSPPluginType = string;
 /**
  * Source
  */
-export type CSPSource = ArrayElement<typeof CSPSourceKeywords> | string;
+export type CSPSource = (typeof CSPSourceKeywords)[number] | string;
 
 /**
  * Generic Reporting Framework
@@ -85,7 +85,7 @@ interface CSPViolationReportBody extends ReportBody {
 	 */
 	readonly blockedURL: string;
 	readonly documentURL: string;
-	readonly effectiveDirective: ArrayElement<typeof CSPDirectives>;
+	readonly effectiveDirective: (typeof CSPDirectives)[number];
 	/**
 	 * The full serialised policy that was violated
 	 */
